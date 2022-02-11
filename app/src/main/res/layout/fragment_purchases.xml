@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="@color/primaryColor"
+        tools:context=".presentation.ui.fragment.PurchasesFragment">
+
+        <ImageView
+            android:id="@+id/img_iori"
+            android:layout_width="@dimen/purchases_image_size"
+            android:layout_height="@dimen/purchases_image_size"
+            android:layout_marginStart="@dimen/common_margin_default"
+            android:layout_marginTop="@dimen/common_margin_default"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_margin_default"
+            android:text="Iori Yagami"
+            app:layout_constraintBottom_toBottomOf="@+id/img_iori"
+            app:layout_constraintStart_toEndOf="@+id/img_iori"
+            app:layout_constraintTop_toTopOf="@+id/img_iori" />
+
+        <TextView
+            android:id="@+id/tv_iori_buy_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_margin_default"
+            android:layout_marginEnd="@dimen/common_margin_default"
+            android:text="¿Fue comprado?"
+            app:layout_constraintBottom_toTopOf="@+id/cb_iori_buy_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_iori" />
+
+        <CheckBox
+            android:id="@+id/cb_iori_buy_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_iori_buy_status"
+            android:layout_marginEnd="@dimen/common_margin_default"
+            app:layout_constraintBottom_toBottomOf="@+id/img_iori"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_iori_buy_status" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_buy_iori"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/secondaryColor"
+            android:text="Comprar cuadro Iori"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_iori" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_buy_leona"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/secondaryColor"
+            android:text="Comprar cuadro Leona"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_buy_iori" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
