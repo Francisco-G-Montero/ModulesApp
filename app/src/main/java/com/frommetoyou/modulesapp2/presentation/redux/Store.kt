@@ -1,5 +1,6 @@
 package com.frommetoyou.modulesapp2.presentation.redux
 
+import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

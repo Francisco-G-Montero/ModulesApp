@@ -43,10 +43,10 @@ class CameraFragment : Fragment() {
     private lateinit var binding: FragmentCameraBinding
     private lateinit var objectDetector: ObjectDetector
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
+    private var lastObjectLabel = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         val localModel = LocalModel.Builder()
             .setAssetFilePath(OBJECT_DETECTION_PATH)
@@ -60,7 +60,6 @@ class CameraFragment : Fragment() {
         objectDetector = ObjectDetection.getClient(customObjectDetectorOptions)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
-            //binding camera provider
             bindPreview(cameraProvider = cameraProvider)
         }, ContextCompat.getMainExecutor(requireContext()))
     }
@@ -93,19 +92,22 @@ class CameraFragment : Fragment() {
                 objectDetector.process(processImage)
                     .addOnSuccessListener { listDetectedObjs ->
                         for (detectedObject in listDetectedObjs) {
-                            for (label in detectedObject.labels){
+                            for (label in detectedObject.labels) {
                                 if (binding.parentCameraLayout.childCount > 1)
                                     binding.parentCameraLayout.removeViewAt(1)
-                                val objectLabel = detectedObject.labels.firstOrNull()?.text ?: "Undefined"
+                                val objectLabel =
+                                    detectedObject.labels.firstOrNull()?.text ?: "Undefined"
                                 val elementView = DrawView(
                                     context = requireContext(),
                                     rect = detectedObject.boundingBox,
                                     text = objectLabel
                                 )
-                                showSnackBar("Elemento detectado: $objectLabel")
+                                if (lastObjectLabel != objectLabel){
+                                    lastObjectLabel = objectLabel
+                                    showSnackBar("Elemento detectado: $objectLabel")
+                                }
                                 binding.parentCameraLayout.addView(elementView)
                             }
-
                         }
                         imageProxy.close()
                     }.addOnFailureListener {
@@ -120,7 +122,7 @@ class CameraFragment : Fragment() {
 
     private fun showSnackBar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE)
-            .setDuration(500)
+            .setDuration(1500)
             .show()
     }
 }

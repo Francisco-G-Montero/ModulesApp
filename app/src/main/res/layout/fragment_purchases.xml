@@ -41,12 +41,12 @@
             android:id="@+id/cb_iori_buy_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            app:layout_constraintStart_toStartOf="@+id/tv_iori_buy_status"
             android:layout_marginEnd="@dimen/common_margin_default"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/img_iori"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_iori_buy_status"
             app:layout_constraintTop_toBottomOf="@+id/tv_iori_buy_status" />
 
         <com.google.android.material.button.MaterialButton
@@ -63,18 +63,78 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_iori" />
 
+        <ImageView
+            android:id="@+id/img_ekko_portrait"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="20dp"
+            android:minWidth="0dp"
+            android:src="@drawable/img_ekko_sticker"
+            app:layout_constraintDimensionRatio="H,3:4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_buy_iori" />
+
+        <TextView
+            android:id="@+id/tv_ekko_sticker_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="x5"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/img_ekko_portrait"
+            app:layout_constraintStart_toEndOf="@+id/img_ekko_portrait" />
+
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_buy_leona"
+            android:id="@+id/btn_buy_ekko"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/custom_button_tint"
+            android:text="Comprar sticker Ekko"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_ekko_portrait" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_consume_ekko"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/custom_button_tint"
+            android:text="Consumir Sticker!"
+            android:textColor="@color/black"
+            android:enabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_buy_ekko" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/secondaryDarkColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_consume_ekko" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_subscribe_magazines"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/secondaryColor"
-            android:text="Comprar cuadro Leona"
+            android:text="Suscribirse a las revistas"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_buy_iori" />
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_mainFragment_to_purchasesFragment"
             app:destination="@id/purchasesFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_workManagerFragment"
+            app:destination="@id/workManagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -33,6 +36,14 @@
         tools:layout="@layout/fragment_purchases" >
         <action
             android:id="@+id/action_purchasesFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workManagerFragment"
+        android:name="com.frommetoyou.modulesapp2.presentation.ui.fragment.WorkManagerFragment"
+        android:label="WorkManagerFragment" >
+        <action
+            android:id="@+id/action_workManagerFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

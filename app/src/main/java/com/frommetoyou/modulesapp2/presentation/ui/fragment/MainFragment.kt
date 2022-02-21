@@ -19,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-const val OBJECT_DETECTION_PATH = "object_detection.tflite"
+const val OBJECT_DETECTION_PATH = "image_labeling_1.tflite"
 const val SELECTED_TEXT_STATE = "S"
 const val POKEMON_ENDPOINT_SV = "https://graphql-pokemon2.vercel.app"
 const val BTN_1 = "btn1"
@@ -77,6 +77,10 @@ class MainFragment : Fragment() {
         }
         binding.btnPurchases.setOnClickListener {
             val action = MainFragmentDirections.actionMainFragmentToPurchasesFragment()
+            findNavController().navigate(action)
+        }
+        binding.btnWorkmanager.setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToWorkManagerFragment()
             findNavController().navigate(action)
         }
     }

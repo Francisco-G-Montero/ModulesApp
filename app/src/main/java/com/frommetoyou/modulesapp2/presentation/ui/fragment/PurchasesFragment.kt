@@ -1,91 +1,127 @@
 package com.frommetoyou.modulesapp2.presentation.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.viewModels
 import com.android.billingclient.api.*
-import com.bumptech.glide.Glide
+import com.frommetoyou.modulesapp2.data.util.BILLING_TAG
 import com.frommetoyou.modulesapp2.databinding.FragmentPurchasesBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.frommetoyou.modulesapp2.presentation.extensions.loadUrlImage
+import com.frommetoyou.modulesapp2.presentation.viewmodel.PurchasesViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PurchasesFragment : Fragment() {
+const val IORI_ITEM_ID = "iori_paint_id"
+const val EKKO_ITEM_ID = "ekko_sticker"
+const val IMG_IORI_URL = "https://pbs.twimg.com/media/CvFXqKwWEAAZdlV.jpg"
+const val IAP_PRODUCT_ID = "productId"
+const val IAP_ACKNOWLEDGED = "acknowledged"
 
+@Singleton
+@AndroidEntryPoint
+class PurchasesFragment @Inject constructor(
+
+) : Fragment() {
     private lateinit var binding: FragmentPurchasesBinding
-
-    private val purchasesUpdatedListener =
-        PurchasesUpdatedListener { billingResult, purchases ->
-            // To be implemented in a later section.
-        }
-
-    private var billingClient = BillingClient.newBuilder(requireContext())
-        .setListener(purchasesUpdatedListener)
-        .enablePendingPurchases()
-        .build()
+    private val viewModel: PurchasesViewModel by viewModels()
+    var ekkoCounter = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentPurchasesBinding.inflate(layoutInflater)
-        Glide.with(requireContext())
-            .load("https://pbs.twimg.com/media/CvFXqKwWEAAZdlV.jpg")
-            .into(binding.imgIori)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       /* binding.btnBuyIori.setOnClickListener {
-            val skuDetails = null
-            val flowParams = BillingFlowParams.newBuilder()
-                .setSkuDetails(skuDetails)
-                .build()
-            val responseCode = billingClient.launchBillingFlow(requireActivity(), flowParams).responseCode
+        binding.imgIori.loadUrlImage(IMG_IORI_URL)
+        viewModel.setupBilling()
+        viewModel.skuDetailList.observe(viewLifecycleOwner) { skuDetailsList ->
+            setupPurchaseButtonsListener(skuDetailsList)
         }
-        connectToGooglePlay()*/
+        viewModel.purchaseList.observe(viewLifecycleOwner) { purchaseList ->
+            setupViewForPurchasedItems(purchaseList)
+        }
+        viewModel.onPurchaseUpdatedList.observe(viewLifecycleOwner) { updatedPurchases ->
+            updatedPurchases?.let { setupViewForPurchasedItems(it) }
+            updatedPurchases?.forEach {
+                viewModel.acknowledgePurchaseIfNecessary(it)
+            }
+        }
+        viewModel.onEkkoPurchaseConsumed.observe(viewLifecycleOwner) { wasConsumed ->
+            handleEkkoConsumtion(wasConsumed)
+        }
+        viewModel.onEkkoPurchaseAcknowledge.observe(viewLifecycleOwner) { wasAcknowledged ->
+            handleEkkoAcknowledgement(wasAcknowledged)
+        }
     }
 
-    private fun connectToGooglePlay() {
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here.
+    private fun handleEkkoAcknowledgement(wasAcknowledged: Boolean) {
+        if (wasAcknowledged) {
+            binding.btnBuyEkko.isEnabled = false
+            binding.btnConsumeEkko.isEnabled = true
+            binding.tvEkkoStickerCounter.text = "${++ekkoCounter}/1"
+        } else {
+            binding.btnBuyEkko.isEnabled = true
+            binding.btnConsumeEkko.isEnabled = false
+            binding.tvEkkoStickerCounter.text = "${--ekkoCounter}/1"
+        }
+    }
+
+    private fun handleEkkoConsumtion(wasConsumed: Boolean) {
+        if (wasConsumed) {
+            binding.tvEkkoStickerCounter.text = "${--ekkoCounter}/1"
+            binding.btnConsumeEkko.isEnabled = false
+            binding.btnBuyEkko.isEnabled = true
+        }
+    }
+
+    private fun setupViewForPurchasedItems(purchaseList: List<Purchase>) {
+        purchaseList.forEach { purchase ->
+            Log.v(BILLING_TAG, purchase.originalJson)
+            val json = JSONObject(purchase.originalJson)
+            val prodId = json.getString("productId")
+            val acknowledged = json.getBoolean(IAP_ACKNOWLEDGED)
+            if (prodId == IORI_ITEM_ID) {
+                binding.cbIoriBuyStatus.isChecked = true
+            } else if (prodId == EKKO_ITEM_ID) {
+                if (acknowledged){
+                    ekkoCounter += 1
+                }
+                binding.tvEkkoStickerCounter.text = "$ekkoCounter/1"
+                binding.btnBuyEkko.isEnabled = !acknowledged
+                binding.btnConsumeEkko.isEnabled = acknowledged
+                binding.btnConsumeEkko.setOnClickListener {
+                    viewModel.consumeEkkoPurchase(purchase)
                 }
             }
-            override fun onBillingServiceDisconnected() {
-                //connectToGooglePlay() me vuelvo a conectar pero primero tengo que testear de no crear un loop inf
-                Toast.makeText(requireContext(), "Hubo un problema al iniciar la conexion con Google Play", Toast.LENGTH_SHORT).show()
-            }
-        })
+            Log.v(BILLING_TAG, "compra::$purchase")
+        }
     }
 
-    suspend fun querySkuDetails() {
-        val skuList = ArrayList<String>()
-        skuList.add("premium_upgrade")
-        skuList.add("gas")
-        val params = SkuDetailsParams.newBuilder()
-        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
-
-        // leverage querySkuDetails Kotlin extension function
-        val skuDetailsResult = withContext(Dispatchers.IO) {
-            billingClient.querySkuDetails(params.build())
-        }
-        // Process the result.
-    }
-
-    /*override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                handlePurchase(purchase)
+    private fun setupPurchaseButtonsListener(skuDetailsList: List<SkuDetails>) {
+        for (skuDetail in skuDetailsList) {
+            Log.v(BILLING_TAG, "sku list: $skuDetailsList")
+            val json = JSONObject(skuDetail.originalJson)
+            val productId = json.getString(IAP_PRODUCT_ID)
+            if (productId == IORI_ITEM_ID) {
+                binding.btnBuyIori.setOnClickListener {
+                    viewModel.launchBillingFlow(skuDetail, requireActivity())
+                }
+            } else if (productId == EKKO_ITEM_ID) {
+                binding.btnBuyEkko.setOnClickListener {
+                    viewModel.launchBillingFlow(skuDetail, requireActivity())
+                }
             }
-        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            // Handle an error caused by a user cancelling the purchase flow.
-        } else {
-            // Handle any other error codes.
+            Log.v(BILLING_TAG, skuDetail.toString())
         }
-    }*/
+    }
 }
