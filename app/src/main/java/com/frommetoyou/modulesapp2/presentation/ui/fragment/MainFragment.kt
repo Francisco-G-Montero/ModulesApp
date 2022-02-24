@@ -12,7 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.apollographql.apollo3.ApolloClient
 import com.frommetoyou.modulesapp2.MyQuery
 import com.frommetoyou.modulesapp2.R
+import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
 import com.frommetoyou.modulesapp2.databinding.FragmentMainBinding
+import com.frommetoyou.modulesapp2.domain.usecases.GenerateLinkUseCase
 import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState
 import com.frommetoyou.modulesapp2.presentation.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,11 +68,11 @@ class MainFragment : Fragment() {
         }
         binding.btnGenLink.setOnClickListener {
             viewModel.genLinkWithSelectedButton(selectedButton, requireActivity())
+            //GenerateLinkUseCase(requireContext()).generateSelectedBtnLink("btnSelected", requireActivity())
         }
         binding.btnFetchPokemons.setOnClickListener {
             execApolloQueries()
         }
-        getDynamicLinkIfAvailable()
         binding.btnCamerax.setOnClickListener {
             val action = MainFragmentDirections.actionMainFragmentToCameraFragment()
             findNavController().navigate(action)
@@ -83,6 +85,7 @@ class MainFragment : Fragment() {
             val action = MainFragmentDirections.actionMainFragmentToWorkManagerFragment()
             findNavController().navigate(action)
         }
+        viewModel.getSelectedButtonLinkData(requireActivity())
     }
 
     private fun selectedButton2() {
@@ -107,34 +110,27 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun getDynamicLinkIfAvailable() {
-        viewModel.getSelectedButtonLinkData(requireActivity()) { text ->
-            when (text) {
-                BTN_1 -> {
-                    selectedButton1()
-                }
-                BTN_2 -> {
-                    selectedButton2()
-                }
-                else -> null
+    private fun getDynamicLinkIfAvailable(btnSelectedData: String) {
+        when (btnSelectedData) {
+            BTN_1 -> {
+                selectedButton1()
             }
-            Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+            BTN_2 -> {
+                selectedButton2()
+            }
+            else -> {}
         }
+        Toast.makeText(requireContext(), btnSelectedData, Toast.LENGTH_SHORT).show()
     }
 
     private fun processViewState(viewState: MainViewState) {
         binding.tvEncriptado.text = viewState.storedText
         binding.etText.setText("")
-        viewState.getFlowText?.let {
-            lifecycleScope.launch {
-                it.collect {
-                    binding.tvEncriptado.text = it
-                }
-            }
-        }
+        binding.tvEncriptado.text = viewState.getFlowText
         if (viewState.dynamicLinkCreated) {
             binding.tvDynamicHelper.text = getString(R.string.main_dynamic_link_helper)
         }
+        getDynamicLinkIfAvailable(viewState.dynamicLinkBtnData)
     }
 
     override fun onResume() {

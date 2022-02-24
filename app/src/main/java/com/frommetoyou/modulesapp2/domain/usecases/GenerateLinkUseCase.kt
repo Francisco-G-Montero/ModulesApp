@@ -4,20 +4,22 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 const val MAIN_DYNAMIC_URL_PREFIX = "https://modulesapp2.page.link"
 
 class GenerateLinkUseCase @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
 ) {
     fun generateSelectedBtnLink(btnSelected: String, activity: Activity) {
         val dynamicLink =
             Firebase.dynamicLinks.dynamicLink { // or Firebase.dynamicLinks.shortLinkAsync
-                link = Uri.parse("$MAIN_DYNAMIC_URL_PREFIX?btn=$btnSelected")
+                link = Uri.parse("$MAIN_DYNAMIC_URL_PREFIX?btn=btnSelected")
                 domainUriPrefix = MAIN_DYNAMIC_URL_PREFIX
                 androidParameters(context.packageName) {
                     minimumVersion = 1

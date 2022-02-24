@@ -5,11 +5,17 @@ import android.net.Uri
 import android.util.Log
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetDynamicLinkUseCase @Inject constructor() {
-    fun getSelectedBtnIfAvailable(activity: Activity, callback: (String) -> Unit) {
-        var btnSelected: String = ""
+class GetDynamicLinkDataUseCase @Inject constructor() {
+    @ExperimentalCoroutinesApi
+    fun getSelectedBtnDataIfAvailable(activity: Activity) = callbackFlow {
+        var btnSelected = ""
         Firebase.dynamicLinks
             .getDynamicLink(activity.intent)
             .addOnSuccessListener(activity) { pendingDynamicLinkData ->
@@ -19,12 +25,14 @@ class GetDynamicLinkUseCase @Inject constructor() {
                     deepLink = pendingDynamicLinkData.link
                     deepLink?.let {
                         btnSelected = deepLink.getQueryParameter("btn") ?: "default"
-                        callback(btnSelected)
                     }
                 }
+                if (btnSelected.isNotBlank()) trySend(btnSelected)
             }
             .addOnFailureListener(activity) { e ->
                 Log.w("TAG", "getDynamicLink:onFailure", e)
+                trySend("getDynamicLink:onFailure: $e")
             }
+        awaitClose { this.cancel() }
     }
 }

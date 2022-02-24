@@ -39,7 +39,7 @@ class WorkManagerFragment : Fragment() {
         viewModel.imgFilePathList.observe(viewLifecycleOwner){
             updateImgList(it)
         }
-        viewModel.checkForStoredImgs()
+        viewModel.checkForStoredImg()
         binding.btnDownload.setOnClickListener {
             viewModel.onDownloadClicked()
         }

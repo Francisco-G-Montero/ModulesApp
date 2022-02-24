@@ -10,5 +10,6 @@ data class MainViewState(
     val errorMessage: String? = null,
     val dynamicLinkCreated: Boolean = false,
     val btnSelected: String = "",
-    val getFlowText: Flow<String>? = null
+    val getFlowText: String = "",
+    val dynamicLinkBtnData: String = ""
 ) : State
