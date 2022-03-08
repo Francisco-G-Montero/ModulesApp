@@ -1,4 +1,4 @@
-package com.intermedia.daiana.scan.data.model;
+package com.frommetoyou.modulesapp2.data.util;
 
 import com.google.gson.annotations.SerializedName;
 

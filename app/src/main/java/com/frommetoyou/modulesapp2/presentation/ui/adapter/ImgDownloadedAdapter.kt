@@ -12,9 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.frommetoyou.modulesapp2.databinding.ListItemImagesBinding
 
-class ImgDownloadedAdapter(
-
-) : ListAdapter<String, ImgDownloadedAdapter.LeafViewHolder>(LeafDiffCallback()) {
+class ImgDownloadedAdapter() : ListAdapter<String, ImgDownloadedAdapter.LeafViewHolder>(LeafDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeafViewHolder {
         val binding = ListItemImagesBinding.inflate(
@@ -52,4 +50,3 @@ class ImgDownloadedAdapter(
         }
     }
 }
-

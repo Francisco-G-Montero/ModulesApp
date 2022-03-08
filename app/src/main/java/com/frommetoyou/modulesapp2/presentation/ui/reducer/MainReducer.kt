@@ -1,12 +1,12 @@
 package com.frommetoyou.modulesapp2.presentation.ui.reducer
 
-import com.frommetoyou.modulesapp2.data.util.ActionResult
 import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
+import com.frommetoyou.modulesapp2.data.util.Result
+import com.frommetoyou.modulesapp2.domain.usecases.*
+import com.frommetoyou.modulesapp2.domain.usecases.GetEncryptedTextUseCase
 import com.frommetoyou.modulesapp2.presentation.redux.Reducer
 import com.frommetoyou.modulesapp2.presentation.ui.action.MainAction
 import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState
-import com.frommetoyou.modulesapp2.domain.usecases.*
-import com.frommetoyou.modulesapp2.domain.usecases.GetEncryptedTextUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -29,7 +29,7 @@ class MainReducer @Inject constructor(
         currentState: MainViewState,
         action: MainAction
     ): Flow<MainViewState> = flow {
-    //    Log.v(MainReducer::class.simpleName, "Processing action: $action")
+        //    Log.v(MainReducer::class.simpleName, "Processing action: $action")
         when (action) {
             is MainAction.OnSaveClicked -> {
                 stateWithSaveClicked(action, currentState)
@@ -77,7 +77,7 @@ class MainReducer @Inject constructor(
         action: MainAction.GenerateLink,
         currentState: MainViewState
     ) {
-        withContext(coroutinesDispatcherProvider.main){
+        withContext(coroutinesDispatcherProvider.main) {
             generateLinkUseCase.generateSelectedBtnLink(action.btnSelected, action.activity)
         }
         emit(
@@ -92,7 +92,7 @@ class MainReducer @Inject constructor(
     ) {
         jetpackSaveUseCase.getUserText().collect { result ->
             when (result) {
-                is ActionResult.Success -> {
+                is Result.Success -> {
                     emit(
                         currentState.copy(
                             getFlowText = result.data
@@ -109,7 +109,7 @@ class MainReducer @Inject constructor(
     ) {
         jetpackSaveUseCase.save(action.text).collect { result ->
             when (result) {
-                is ActionResult.Success -> {
+                is Result.Success -> {
                     emit(
                         currentState.copy(
                             storedText = ""

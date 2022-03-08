@@ -1,10 +1,13 @@
 package com.frommetoyou.modulesapp2
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import app.cash.turbine.test
 import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
-import com.frommetoyou.modulesapp2.domain.usecases.*
-import com.frommetoyou.modulesapp2.presentation.redux.Store
+import com.frommetoyou.modulesapp2.domain.usecases.CheckForUpdatesUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.GenerateLinkUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.GetDynamicLinkDataUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.GetEncryptedTextUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.JetpackSaveUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.SaveEncryptedTextUseCase
 import com.frommetoyou.modulesapp2.presentation.ui.action.MainAction
 import com.frommetoyou.modulesapp2.presentation.ui.reducer.MainReducer
 import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState

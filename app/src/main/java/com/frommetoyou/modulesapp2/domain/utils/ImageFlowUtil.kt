@@ -6,9 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ImageFlowUtil @Inject constructor(
-
-) {
+class ImageFlowUtil @Inject constructor() {
     private val _imagePathList = MutableLiveData<List<String>>()
     val imagePathList: LiveData<List<String>>
         get() = _imagePathList

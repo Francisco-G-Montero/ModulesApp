@@ -3,21 +3,24 @@ package com.frommetoyou.modulesapp2
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.cash.turbine.test
 import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
-import com.frommetoyou.modulesapp2.domain.usecases.*
+import com.frommetoyou.modulesapp2.domain.usecases.CheckForUpdatesUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.GenerateLinkUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.GetDynamicLinkDataUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.GetEncryptedTextUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.JetpackSaveUseCase
+import com.frommetoyou.modulesapp2.domain.usecases.SaveEncryptedTextUseCase
 import com.frommetoyou.modulesapp2.presentation.redux.Store
 import com.frommetoyou.modulesapp2.presentation.ui.action.MainAction
 import com.frommetoyou.modulesapp2.presentation.ui.reducer.MainReducer
 import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-//import kotlinx.coroutines.test.setMain
-import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
@@ -66,7 +69,8 @@ class MainViewModelStateTests {
         store = Store(viewState, mainReducer)
         // viewModel = MainViewModel()
     }
-    //end to end scope chico?
+
+    // end to end scope chico?
     @Test
     fun checkRandomStateForChosenAction() = runBlockingTest {
         val text = "Test text returned!"
@@ -74,7 +78,7 @@ class MainViewModelStateTests {
         whenever(getEncryptedTextUseCase.getEncryptedText()).thenReturn(text)
         store.dispatch(action)
         store.state.test {
-            assertEquals(awaitItem(), viewState.copy(storedText = text))
+            Assert.assertEquals(awaitItem(), viewState.copy(storedText = text))
             cancelAndConsumeRemainingEvents()
         }
     }

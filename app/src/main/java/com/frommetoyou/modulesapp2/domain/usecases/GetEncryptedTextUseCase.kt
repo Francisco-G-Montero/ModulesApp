@@ -13,6 +13,6 @@ class GetEncryptedTextUseCase @Inject constructor(
     fun getEncryptedText(): String {
         val sharedPreferences = getEncrypedSharedPrefs(context)
         val text = sharedPreferences.getString(ENCRYPTED_TEXT, DEFAULT_TEXT)
-        return text?: DEFAULT_TEXT
+        return text ?: DEFAULT_TEXT
     }
 }

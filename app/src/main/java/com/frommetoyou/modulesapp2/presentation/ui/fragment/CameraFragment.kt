@@ -3,7 +3,6 @@ package com.frommetoyou.modulesapp2.presentation.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.frommetoyou.modulesapp2.databinding.FragmentCameraBinding
 import com.frommetoyou.modulesapp2.presentation.utils.DrawView
 import com.google.android.material.snackbar.Snackbar
@@ -62,67 +62,69 @@ class CameraFragment : Fragment() {
             val cameraProvider = cameraProviderFuture.get()
             bindPreview(cameraProvider = cameraProvider)
         }, ContextCompat.getMainExecutor(requireContext()))
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCameraBinding.inflate(layoutInflater)
-        return binding.root
-    }
-
-    @SuppressLint("UnsafeOptInUsageError")
-    private fun bindPreview(cameraProvider: ProcessCameraProvider) {
-        val preview = Preview.Builder()
-            .build()
-            .also {
-                it.setSurfaceProvider(binding.previewView.surfaceProvider)
-            }
-        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-        val imageAnalysis = ImageAnalysis.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .build()
-        imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireActivity())) { imageProxy ->
-            val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-            val image = imageProxy.image
-            image?.let {
-                val processImage = InputImage.fromMediaImage(image, rotationDegrees)
-                objectDetector.process(processImage)
-                    .addOnSuccessListener { listDetectedObjs ->
-                        for (detectedObject in listDetectedObjs) {
-                            for (label in detectedObject.labels) {
-                                if (binding.parentCameraLayout.childCount > 1)
-                                    binding.parentCameraLayout.removeViewAt(1)
-                                val objectLabel =
-                                    detectedObject.labels.firstOrNull()?.text ?: "Undefined"
-                                val elementView = DrawView(
-                                    context = requireContext(),
-                                    rect = detectedObject.boundingBox,
-                                    text = objectLabel
-                                )
-                                if (lastObjectLabel != objectLabel){
-                                    lastObjectLabel = objectLabel
-                                    showSnackBar("Elemento detectado: $objectLabel")
-                                }
-                                binding.parentCameraLayout.addView(elementView)
-                            }
-                        }
-                        imageProxy.close()
-                    }.addOnFailureListener {
-                        Log.v("MainFragment", "Error ${it.message}")
-                        showSnackBar("Error message: ${it.message}")
-                        imageProxy.close()
-                    }
-            }
         }
-        cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, imageAnalysis, preview)
-    }
 
-    private fun showSnackBar(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE)
-            .setDuration(1500)
-            .show()
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            binding = FragmentCameraBinding.inflate(layoutInflater)
+            return binding.root
+        }
+
+        @SuppressLint("UnsafeOptInUsageError")
+        private fun bindPreview(cameraProvider: ProcessCameraProvider) {
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(binding.previewView.surfaceProvider)
+                }
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+            imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireActivity())) { imageProxy ->
+                val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                val image = imageProxy.image
+                image?.let {
+                    val processImage = InputImage.fromMediaImage(image, rotationDegrees)
+                    objectDetector.process(processImage)
+                        .addOnSuccessListener { listDetectedObjs ->
+                            for (detectedObject in listDetectedObjs) {
+                                for (label in detectedObject.labels) {
+                                    if (binding.parentCameraLayout.childCount > 1)
+                                        binding.parentCameraLayout.removeViewAt(1)
+                                    val objectLabel =
+                                        detectedObject.labels.firstOrNull()?.text ?: "Undefined"
+                                    val elementView = DrawView(
+                                        context = requireContext(),
+                                        rect = detectedObject.boundingBox,
+                                        text = objectLabel
+                                    )
+                                    if (lastObjectLabel != objectLabel) {
+                                        lastObjectLabel = objectLabel
+                                        showSnackBar("Elemento detectado: $objectLabel")
+                                    }
+                                    binding.parentCameraLayout.addView(elementView)
+                                }
+                            }
+                            imageProxy.close()
+                        }.addOnFailureListener {
+                            Log.v("MainFragment", "Error ${it.message}")
+                            showSnackBar("Error message: ${it.message}")
+                            imageProxy.close()
+                        }
+                }
+            }
+            cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, imageAnalysis, preview)
+        }
+
+        private fun showSnackBar(message: String) {
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE)
+                .setDuration(1500)
+                .show()
+        }
     }
-}
+    

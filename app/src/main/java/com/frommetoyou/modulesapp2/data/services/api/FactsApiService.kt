@@ -1,4 +1,4 @@
-package com.frommetoyou.modulesapp2.data.model.services.api
+package com.frommetoyou.modulesapp2.data.services.api
 
 import com.frommetoyou.modulesapp2.data.model.Facts
 import retrofit2.Response

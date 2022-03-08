@@ -6,10 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.frommetoyou.modulesapp2.data.util.ActionResult
 import com.frommetoyou.modulesapp2.data.util.NullModel
+import com.frommetoyou.modulesapp2.data.util.Result
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -23,16 +22,16 @@ class JetpackSaveUseCase @Inject constructor(
         context.dataStore.edit { settings ->
             val userText = settings[USER_TEXT] ?: text
             settings[USER_TEXT] = userText
-            emit(ActionResult.Success(NullModel()))
+            emit(Result.Success(NullModel()))
         }
     }
 
-    fun getUserText(): Flow<ActionResult<String>> = flow {
+    fun getUserText(): Flow<Result<String>> = flow {
         context.dataStore.data
             .map { preferences ->
                 preferences[USER_TEXT] ?: "null"
             }.collect {
-                emit(ActionResult.Success(it))
+                emit(Result.Success(it))
             }
     }
 }

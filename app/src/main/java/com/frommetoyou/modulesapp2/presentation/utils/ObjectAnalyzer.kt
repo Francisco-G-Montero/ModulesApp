@@ -1,8 +1,5 @@
 package com.frommetoyou.modulesapp2.presentation.utils
 
-import android.util.Log
-import com.google.mlkit.vision.common.InputImage
-
 /*
 class ObjectAnalyzer(
     private val onQrCodesDetected: (qrCodes: List<Barcode>?) -> Unit

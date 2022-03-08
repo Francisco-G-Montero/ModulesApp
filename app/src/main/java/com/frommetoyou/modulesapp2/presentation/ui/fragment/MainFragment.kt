@@ -1,6 +1,7 @@
 package com.frommetoyou.modulesapp2.presentation.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +11,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.apollographql.apollo3.ApolloClient
+import com.frommetoyou.modulesapp2.BuildConfig
 import com.frommetoyou.modulesapp2.MyQuery
 import com.frommetoyou.modulesapp2.R
-import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
 import com.frommetoyou.modulesapp2.databinding.FragmentMainBinding
-import com.frommetoyou.modulesapp2.domain.usecases.GenerateLinkUseCase
 import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState
 import com.frommetoyou.modulesapp2.presentation.viewmodel.MainViewModel
+import com.google.android.gms.common.api.Status
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 const val OBJECT_DETECTION_PATH = "image_labeling_1.tflite"
 const val SELECTED_TEXT_STATE = "S"
@@ -33,8 +38,16 @@ class MainFragment : Fragment() {
     private var selectedButton = ""
     private val viewModel: MainViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val apiKey = BuildConfig.MAPS_API_KEY
+        Places.initialize(requireContext(), apiKey)
+        Places.createClient(requireContext())
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(layoutInflater)
@@ -68,7 +81,6 @@ class MainFragment : Fragment() {
         }
         binding.btnGenLink.setOnClickListener {
             viewModel.genLinkWithSelectedButton(selectedButton, requireActivity())
-            //GenerateLinkUseCase(requireContext()).generateSelectedBtnLink("btnSelected", requireActivity())
         }
         binding.btnFetchPokemons.setOnClickListener {
             execApolloQueries()
@@ -85,7 +97,45 @@ class MainFragment : Fragment() {
             val action = MainFragmentDirections.actionMainFragmentToWorkManagerFragment()
             findNavController().navigate(action)
         }
+        binding.btnMaps.setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToMapsFragment()
+            findNavController().navigate(action)
+        }
         viewModel.getSelectedButtonLinkData(requireActivity())
+        initializePlacesFragment()
+    }
+
+    private fun processViewState(viewState: MainViewState) {
+        binding.tvEncriptado.text = viewState.storedText
+        binding.etText.setText("")
+        binding.tvEncriptado.text = viewState.getFlowText
+        if (viewState.dynamicLinkCreated) {
+            binding.tvDynamicHelper.text = getString(R.string.main_dynamic_link_helper)
+        }
+        getDynamicLinkIfAvailable(viewState.dynamicLinkBtnData)
+    }
+
+    private fun initializePlacesFragment() {
+        // Initialize the AutocompleteSupportFragment.
+        val TAG = "PLACES_FRAGMENT"
+        val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment)
+            as AutocompleteSupportFragment
+        // Se especifican los campos que quiero que me devuelva, entre mas campos ponga mas me cobran
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
+        // se filtran las predicciones para que sean del tipo address y sólo en Argentina
+        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS)
+        autocompleteFragment.setCountries("AR")
+
+        // Al ser clickeado una prediccion se devuelve el place con los campos elegidos
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                Log.i(TAG, "Place: ${place.name}, ${place.id}")
+            }
+
+            override fun onError(status: Status) {
+                Log.i(TAG, "An error occurred: $status")
+            }
+        })
     }
 
     private fun selectedButton2() {
@@ -121,16 +171,6 @@ class MainFragment : Fragment() {
             else -> {}
         }
         Toast.makeText(requireContext(), btnSelectedData, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun processViewState(viewState: MainViewState) {
-        binding.tvEncriptado.text = viewState.storedText
-        binding.etText.setText("")
-        binding.tvEncriptado.text = viewState.getFlowText
-        if (viewState.dynamicLinkCreated) {
-            binding.tvDynamicHelper.text = getString(R.string.main_dynamic_link_helper)
-        }
-        getDynamicLinkIfAvailable(viewState.dynamicLinkBtnData)
     }
 
     override fun onResume() {

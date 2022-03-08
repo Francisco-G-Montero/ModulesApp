@@ -16,8 +16,8 @@ class WorkManagerReducer @Inject constructor(
     override suspend fun reduce(
         currentState: WorkManagerViewState,
         action: WorkManagerAction
-    ): Flow<WorkManagerViewState> = flow{
-         when (action) {
+    ): Flow<WorkManagerViewState> = flow {
+        when (action) {
             is WorkManagerAction.OnCheckStoredImgAction -> {
                 getStoredImgUseCase.fetchImages()
                 emit(currentState)

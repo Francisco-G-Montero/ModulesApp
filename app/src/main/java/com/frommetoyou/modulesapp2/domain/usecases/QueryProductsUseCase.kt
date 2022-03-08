@@ -7,8 +7,8 @@ import javax.inject.Inject
 class QueryProductsUseCase @Inject constructor(
     val inAppPurchasesRepository: InAppPurchasesRepository
 ) {
-    operator fun invoke(callback: (skuDetails: List<SkuDetails>?) -> Unit){
-        inAppPurchasesRepository.queryOneTimeProducts{
+    operator fun invoke(callback: (skuDetails: List<SkuDetails>?) -> Unit) {
+        inAppPurchasesRepository.queryOneTimeProducts {
             callback(it)
         }
     }

@@ -1,7 +1,6 @@
 package com.frommetoyou.modulesapp2.data.util
 
 import android.util.Log
-import android.widget.Toast
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
@@ -9,6 +8,10 @@ import javax.inject.Inject
 
 const val BILLING_TAG = "billing_tag"
 
+/**
+ * El billing es provisto por el di
+ * Se conecta a la google play antes de realizar cualquier tipo de operacion
+ * */
 class BillingConnectionManager @Inject constructor(
     val billingClient: BillingClient
 ) {

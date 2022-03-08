@@ -1,8 +1,7 @@
-package com.intermedia.daiana.scan.data.extensions
+package com.frommetoyou.modulesapp2.data.extensions
 
-import com.intermedia.daiana.scan.data.model.ErrorResponse
-import com.intermedia.daiana.scan.data.util.Result
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.frommetoyou.modulesapp2.data.util.ErrorResponse
+import com.frommetoyou.modulesapp2.data.util.Result
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -31,13 +30,10 @@ fun getErrorResponse(errorBody: ResponseBody?): Result.Error {
             else UNKNOWN_ERROR
         return Result.Error(errorMessage)
     } catch (e: java.lang.Exception) {
-        FirebaseCrashlytics.getInstance().recordException(e)
         return Result.Error(e.message ?: UNKNOWN_ERROR)
     }
-
 }
 
 fun <T> Throwable.getResponseError(): Response<T> {
-    FirebaseCrashlytics.getInstance().recordException(this)
     return Response.error(DEFAULT_CODE_ERROR, DEFAULT_ERROR.toResponseBody(null))
 }

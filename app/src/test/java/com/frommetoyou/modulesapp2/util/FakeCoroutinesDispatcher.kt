@@ -15,5 +15,6 @@ fun provideFakeCoroutinesDispatcherProvider(
     return CoroutinesDispatcherProvider(
         main ?: sharedTestCoroutineDispatcher,
         computation ?: sharedTestCoroutineDispatcher,
-        io ?: sharedTestCoroutineDispatcher)
+        io ?: sharedTestCoroutineDispatcher
+    )
 }

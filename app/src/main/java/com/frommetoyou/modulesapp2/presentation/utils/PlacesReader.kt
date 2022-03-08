@@ -1,8 +1,8 @@
-package com.frommetoyou.modulesapp2.data.util
+package com.frommetoyou.modulesapp2.presentation.utils
 
 import android.content.Context
 import com.frommetoyou.modulesapp2.R
-import com.google.android.libraries.places.api.model.Place
+import com.frommetoyou.modulesapp2.data.model.Place
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStream
@@ -31,3 +31,4 @@ class PlacesReader(private val context: Context) {
             it.toPlace()
         }
     }
+}

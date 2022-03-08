@@ -1,6 +1,6 @@
 package com.frommetoyou.modulesapp2.data.util
 
-sealed class ActionResult<out T>{
-    data class Success<out T>(val data: T) : ActionResult<T>()
-    data class Error(val errorMessage: String) : ActionResult<Nothing>()
+sealed class Result<out T> {
+    data class Success<out T>(val data: T) : Result<T>()
+    data class Error(val errorMessage: String) : Result<Nothing>()
 }

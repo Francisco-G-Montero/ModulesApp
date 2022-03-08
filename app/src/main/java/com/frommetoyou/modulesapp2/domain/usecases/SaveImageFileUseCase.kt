@@ -3,7 +3,6 @@ package com.frommetoyou.modulesapp2.domain.usecases
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Environment
-import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -16,7 +15,7 @@ const val FILE_SUFFIX = ".jpg"
 
 class SaveImageFileUseCase @Inject constructor(
     @ApplicationContext val context: Context
-){
+) {
     @Throws(IOException::class)
     fun saveBitmapToFile(bitmap: Bitmap): File {
         // Create an image file name

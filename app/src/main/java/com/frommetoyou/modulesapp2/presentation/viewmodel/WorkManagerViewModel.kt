@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.frommetoyou.modulesapp2.domain.utils.ImageFlowUtil
 import com.frommetoyou.modulesapp2.presentation.redux.Store
-import com.frommetoyou.modulesapp2.presentation.ui.action.MainAction
 import com.frommetoyou.modulesapp2.presentation.ui.action.WorkManagerAction
 import com.frommetoyou.modulesapp2.presentation.ui.reducer.WorkManagerReducer
 import com.frommetoyou.modulesapp2.presentation.ui.state.WorkManagerViewState

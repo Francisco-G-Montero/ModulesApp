@@ -7,9 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BillingListenerHolder @Inject constructor(
-
-) : PurchasesResponseListener, PurchasesUpdatedListener {
+class BillingListenerHolder @Inject constructor() : PurchasesResponseListener, PurchasesUpdatedListener {
     private val _purchaseList = MutableLiveData<List<Purchase>>()
     val purchaseList: LiveData<List<Purchase>> = _purchaseList
 

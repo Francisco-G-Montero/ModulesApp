@@ -1,6 +1,5 @@
 package com.frommetoyou.modulesapp2.presentation.ui.action
 
-import android.app.Activity
 import com.frommetoyou.modulesapp2.presentation.redux.Action
 
 /**

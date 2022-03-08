@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_mainFragment_to_workManagerFragment"
             app:destination="@id/workManagerFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -46,4 +49,9 @@
             android:id="@+id/action_workManagerFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.frommetoyou.modulesapp2.presentation.ui.fragment.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 </navigation>
