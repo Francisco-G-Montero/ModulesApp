@@ -101,6 +101,10 @@ class MainFragment : Fragment() {
             val action = MainFragmentDirections.actionMainFragmentToMapsFragment()
             findNavController().navigate(action)
         }
+        binding.btnTypeViewList.setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToMultipleTypeListFragment()
+            findNavController().navigate(action)
+        }
         viewModel.getSelectedButtonLinkData(requireActivity())
         initializePlacesFragment()
     }
