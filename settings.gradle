@@ -8,3 +8,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ModulesApp"
 include ':app'
+include ':core'
+include ':facts_usecase_module'
+include ':feature_lists'

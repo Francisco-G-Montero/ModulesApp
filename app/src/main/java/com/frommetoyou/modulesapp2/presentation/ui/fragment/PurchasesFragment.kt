@@ -2,10 +2,10 @@ package com.frommetoyou.modulesapp2.presentation.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.android.billingclient.api.*
 import com.frommetoyou.modulesapp2.data.util.BILLING_TAG
@@ -25,15 +25,14 @@ const val IAP_ACKNOWLEDGED = "acknowledged"
 
 @Singleton
 @AndroidEntryPoint
-class PurchasesFragment @Inject constructor(
-
-) : Fragment() {
+class PurchasesFragment @Inject constructor() : Fragment() {
     private lateinit var binding: FragmentPurchasesBinding
     private val viewModel: PurchasesViewModel by viewModels()
     var ekkoCounter = 0
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPurchasesBinding.inflate(layoutInflater)
@@ -93,7 +92,7 @@ class PurchasesFragment @Inject constructor(
             if (prodId == IORI_ITEM_ID) {
                 binding.cbIoriBuyStatus.isChecked = true
             } else if (prodId == EKKO_ITEM_ID) {
-                if (acknowledged){
+                if (acknowledged) {
                     ekkoCounter += 1
                 }
                 binding.tvEkkoStickerCounter.text = "$ekkoCounter/1"

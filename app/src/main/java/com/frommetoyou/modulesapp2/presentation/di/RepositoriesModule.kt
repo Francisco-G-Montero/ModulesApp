@@ -21,4 +21,11 @@ class RepositoriesModule {
     ): InAppPurchasesRepository {
         return InAppPurchasesImpl(billingClient, coroutinesDispatcherProvider)
     }
+   /* @Singleton
+    @Provides
+    fun provideFactsRepository(
+        factsApiService: FactsApiService
+    ): FactsRepository {
+        return FactsRepositoryImpl(factsApiService)
+    }*/
 }

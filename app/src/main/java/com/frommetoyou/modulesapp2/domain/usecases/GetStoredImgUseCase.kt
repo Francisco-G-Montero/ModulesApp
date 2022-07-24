@@ -1,8 +1,6 @@
 package com.frommetoyou.modulesapp2.domain.usecases
 
 import android.content.Context
-import android.os.Environment
-import android.util.Log
 import com.frommetoyou.modulesapp2.domain.utils.ImageFlowUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File

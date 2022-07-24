@@ -5,26 +5,28 @@ import com.frommetoyou.modulesapp2.domain.usecases.WorkManagerUseCase
 import com.frommetoyou.modulesapp2.presentation.redux.Reducer
 import com.frommetoyou.modulesapp2.presentation.ui.action.WorkManagerAction
 import com.frommetoyou.modulesapp2.presentation.ui.state.WorkManagerViewState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class WorkManagerReducer @Inject constructor(
     private val workManagerUseCase: WorkManagerUseCase,
     private val getStoredImgUseCase: GetStoredImgUseCase
 ) : Reducer<WorkManagerViewState, WorkManagerAction> {
-    override fun reduce(
+    override suspend fun reduce(
         currentState: WorkManagerViewState,
         action: WorkManagerAction
-    ): WorkManagerViewState {
-        return when (action) {
+    ): Flow<WorkManagerViewState> = flow {
+        when (action) {
             is WorkManagerAction.OnCheckStoredImgAction -> {
                 getStoredImgUseCase.fetchImages()
-                currentState
+                emit(currentState)
             }
             is WorkManagerAction.OnDownloadClicked -> {
                 workManagerUseCase.startWorker()
-                currentState
+                emit(currentState)
             }
-            else -> currentState
+            else -> {}
         }
     }
 }

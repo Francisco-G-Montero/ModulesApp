@@ -1,10 +1,10 @@
 package com.frommetoyou.modulesapp2.presentation.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.frommetoyou.modulesapp2.databinding.FragmentWorkManagerBinding
@@ -21,7 +21,8 @@ class WorkManagerFragment : Fragment() {
     private var imgDownloadedAdapter: ImgDownloadedAdapter? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentWorkManagerBinding.inflate(layoutInflater)
@@ -36,10 +37,10 @@ class WorkManagerFragment : Fragment() {
                 processViewState(viewState)
             }
         }
-        viewModel.imgFilePathList.observe(viewLifecycleOwner){
+        viewModel.imgFilePathList.observe(viewLifecycleOwner) {
             updateImgList(it)
         }
-        viewModel.checkForStoredImgs()
+        viewModel.checkForStoredImg()
         binding.btnDownload.setOnClickListener {
             viewModel.onDownloadClicked()
         }

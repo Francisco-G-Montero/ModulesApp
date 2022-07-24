@@ -13,7 +13,7 @@ sealed class MainAction : Action {
     object OnJetpackGetClicked : MainAction()
     data class CheckForUpdates(val activity: Activity) : MainAction()
     data class GenerateLink(val btnSelected: String, val activity: Activity) : MainAction()
-    data class GetBtnSelectedLinkData(val activity: Activity, val callback: (String)->Unit) : MainAction()
+    data class GetBtnSelectedLinkData(val activity: Activity) : MainAction()
     data class ShowLoading(val show: Boolean) : MainAction()
     data class OnError(val message: String) : MainAction()
 }

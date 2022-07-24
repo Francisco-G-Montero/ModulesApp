@@ -1,31 +1,44 @@
-ext {
-    var = 'D:\\Android\\keysPath\\modulesapp\\modules2.jks'
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = "1.5.31"
-    ext.lifecycle_version = "2.4.0"
-    ext.arch_version = "2.1.0"
-    ext.nav_version = "2.4.0"
+    ext.nav_version = "2.4.1"
     ext.koin_version = "3.0.2"
     ext.retrofit = "2.9.0"
     ext.coroutines = "1.5.2"
     ext.junit = "1.1.2"
     ext.apollo_version = "3.0.0"
+    ext.dokka_version = "1.6.10"
 
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.4"
+        classpath 'com.android.tools.build:gradle:7.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.38.1"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
         classpath 'com.google.gms:google-services:4.3.10'
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+
+/*
+//KLINT VIEJO
+plugins{
+    id "org.jlleitschuh.gradle.ktlint" version "7.1.0"
+}
+
+allprojects {
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
+}*/
+
+ext {
+    var = 'D:\\Android\\keysPath\\modulesapp\\modules2.jks'
+}// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 task clean(type: Delete) {
     delete rootProject.buildDir

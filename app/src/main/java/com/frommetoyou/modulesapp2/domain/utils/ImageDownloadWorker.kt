@@ -38,7 +38,7 @@ class ImageDownloadWorker @AssistedInject constructor(
         val imgPathList = inputData.getStringArray(IMG_URL_LIST_NAME)
 
         imgPathList?.toList()?.forEachIndexed() { index, url ->
-            Thread.sleep(2000) //emulating network call.
+            Thread.sleep(2000) // emulating network call.
             val file = downloadImage(index, url)
             imageFlowUtil.appendImgPath(file.absolutePath)
         }
@@ -59,7 +59,7 @@ class ImageDownloadWorker @AssistedInject constructor(
             .build()
         val response = client.newCall(request).execute()
         val bitmap = BitmapFactory.decodeStream(response.body?.byteStream())
-        displayNotification("Imagen ${index+1}", 3, index + 1)
+        displayNotification("Imagen ${index + 1}", 3, index + 1)
         return saveImageFileUseCase.saveBitmapToFile(bitmap)
     }
 
@@ -81,7 +81,7 @@ class ImageDownloadWorker @AssistedInject constructor(
         notificationLayout.setImageViewResource(R.id.img_notif, R.drawable.ic_cloud_download)
         notificationLayout.setTextViewText(
             R.id.tv_notif_progress,
-            "${title} (${current}/${total} complete)"
+            "$title ($current/$total complete)"
         )
         notificationLayout.setTextViewText(R.id.tv_notif_title, "Downloading Images")
         notificationLayout.setProgressBar(R.id.pb_notif, total, current, false)
@@ -94,4 +94,3 @@ class ImageDownloadWorker @AssistedInject constructor(
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 }
-

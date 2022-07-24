@@ -1,8 +1,8 @@
 package com.frommetoyou.modulesapp2.presentation.redux
 
-import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 
 /**
  * Es nuestro State container para una screen dada
@@ -16,9 +16,10 @@ class Store<S : State, A : Action>(
     private val _state = MutableStateFlow(initialState)
     val state: StateFlow<S> = _state
 
-    fun dispatch(action: A) {
+    suspend fun dispatch(action: A) {
         val currentState = _state.value
-        val newState = reducer.reduce(currentState, action)
-        _state.value = newState
+        reducer.reduce(currentState, action).collect {
+            _state.value = it
+        }
     }
 }

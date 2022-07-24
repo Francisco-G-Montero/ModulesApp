@@ -36,9 +36,18 @@ class PurchasesViewModel @Inject constructor(
     val onEkkoPurchaseAcknowledge: LiveData<Boolean>
         get() = _onEkkoPurchaseAcknowledge
 
-    val onPurchaseUpdatedList: LiveData<List<Purchase>?>//TODO acknowledge purchase
+    val onPurchaseUpdatedList: LiveData<List<Purchase>?> // TODO acknowledge purchase
         get() = billingInterface.onPurchaseUpdatedList
 
+    /**
+     * queryPurchaseHistoryUseCase:
+     * Me conecto a la google play y una vez listo primero busco todas las compras del usuario
+     * para ver si muestro los items mostrados en la UI como ya comprados o su cantidad
+     *
+     * queryProductsUseCase:
+     * Al mismo tiempo busco todos los productos disponibles para comprar, esto con el fin de
+     * proporcionar los skuDetails necesarios para que el user pueda clickear y proceder a una compra
+     * */
     fun setupBilling() = viewModelScope.launch {
         billingConnectionManager.connectToGooglePlay {
             queryPurchaseHistoryUseCase()

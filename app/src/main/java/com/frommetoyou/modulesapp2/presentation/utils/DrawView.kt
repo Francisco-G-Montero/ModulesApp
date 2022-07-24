@@ -26,7 +26,6 @@ class DrawView(context: Context?, var rect: Rect, var text: String) : View(conte
         textPaint.color = Color.BLACK
         textPaint.textSize = 48f
         textPaint.style = Paint.Style.FILL
-
     }
 
     override fun onDraw(canvas: Canvas?) {

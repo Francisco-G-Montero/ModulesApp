@@ -1,34 +1,44 @@
 package com.frommetoyou.modulesapp2.presentation.ui.reducer
 
-import android.util.Log
+import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
+import com.frommetoyou.modulesapp2.data.util.Result
+import com.frommetoyou.modulesapp2.domain.usecases.*
+import com.frommetoyou.modulesapp2.domain.usecases.GetEncryptedTextUseCase
 import com.frommetoyou.modulesapp2.presentation.redux.Reducer
 import com.frommetoyou.modulesapp2.presentation.ui.action.MainAction
 import com.frommetoyou.modulesapp2.presentation.ui.state.MainViewState
-import com.frommetoyou.modulesapp2.domain.usecases.*
-import com.frommetoyou.modulesapp2.domain.usecases.GetEncryptedTextUseCase
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class MainReducer @Inject constructor(
     private val saveEncryptedTextUseCase: SaveEncryptedTextUseCase,
     private val getEncryptedTextUseCase: GetEncryptedTextUseCase,
     private val checkForUpdatesUseCase: CheckForUpdatesUseCase,
     private val generateLinkUseCase: GenerateLinkUseCase,
-    private val getDynamicLinkUseCase: GetDynamicLinkUseCase,
-    private val jetpackSaveUseCase: JetpackSaveUseCase
+    private val getDynamicLinkUseCase: GetDynamicLinkDataUseCase,
+    private val jetpackSaveUseCase: JetpackSaveUseCase,
+    private val coroutinesDispatcherProvider: CoroutinesDispatcherProvider
 ) : Reducer<MainViewState, MainAction> {
-    override fun reduce(currentState: MainViewState, action: MainAction): MainViewState {
-        Log.v(MainReducer::class.simpleName, "Processing action: $action")
-
-        return when (action) {
+    override suspend fun reduce(
+        currentState: MainViewState,
+        action: MainAction
+    ): Flow<MainViewState> = flow {
+        //    Log.v(MainReducer::class.simpleName, "Processing action: $action")
+        when (action) {
             is MainAction.OnSaveClicked -> {
-                stateWithSaveClicked(currentState, action)
+                stateWithSaveClicked(action, currentState)
             }
             is MainAction.OnGetClicked -> {
                 stateWithGetClicked(currentState)
             }
             is MainAction.OnJetpackSaveClicked -> {
-                stateWithJetpackSaveClicked(currentState, action)
+                stateWithJetpackSaveClicked(action, currentState)
             }
             is MainAction.OnJetpackGetClicked -> {
                 stateWithJetpackGetClicked(currentState)
@@ -40,17 +50,97 @@ class MainReducer @Inject constructor(
                 stateWithCheckForUpdates(action, currentState)
             }
             is MainAction.GenerateLink -> {
-                generateLinkUseCase.generateSelectedBtnLink(action.btnSelected, action.activity)
-                currentState.copy(
-                    dynamicLinkCreated = true
-                )
+                generateLinkWithState(action, currentState)
             }
             is MainAction.GetBtnSelectedLinkData -> {
-                getDynamicLinkUseCase.getSelectedBtnIfAvailable(action.activity, action.callback)
-                currentState
+                getBtnSelectedLinkDataWithState(action, currentState)
             }
-            else -> currentState
+            else -> {}
         }
+    }
+
+    @ExperimentalCoroutinesApi
+    private suspend fun FlowCollector<MainViewState>.getBtnSelectedLinkDataWithState(
+        action: MainAction.GetBtnSelectedLinkData,
+        currentState: MainViewState
+    ) {
+        getDynamicLinkUseCase.getSelectedBtnDataIfAvailable(action.activity).collect {
+            emit(
+                currentState.copy(
+                    dynamicLinkBtnData = it
+                )
+            )
+        }
+    }
+
+    private suspend fun FlowCollector<MainViewState>.generateLinkWithState(
+        action: MainAction.GenerateLink,
+        currentState: MainViewState
+    ) {
+        withContext(coroutinesDispatcherProvider.main) {
+            generateLinkUseCase.generateSelectedBtnLink(action.btnSelected, action.activity)
+        }
+        emit(
+            currentState.copy(
+                dynamicLinkCreated = true
+            )
+        )
+    }
+
+    private suspend fun FlowCollector<MainViewState>.stateWithJetpackGetClicked(
+        currentState: MainViewState
+    ) {
+        jetpackSaveUseCase.getUserText().collect { result ->
+            when (result) {
+                is Result.Success -> {
+                    emit(
+                        currentState.copy(
+                            getFlowText = result.data
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun FlowCollector<MainViewState>.stateWithJetpackSaveClicked(
+        action: MainAction.OnJetpackSaveClicked,
+        currentState: MainViewState
+    ) {
+        jetpackSaveUseCase.save(action.text).collect { result ->
+            when (result) {
+                is Result.Success -> {
+                    emit(
+                        currentState.copy(
+                            storedText = ""
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun FlowCollector<MainViewState>.stateWithGetClicked(
+        currentState: MainViewState
+    ) {
+        val text = getEncryptedTextUseCase.getEncryptedText()
+        emit(
+            currentState.copy(
+                storedText = text
+            )
+        )
+    }
+
+    private suspend fun FlowCollector<MainViewState>.stateWithSaveClicked(
+        action: MainAction.OnSaveClicked,
+        currentState: MainViewState
+    ) {
+        saveEncryptedTextUseCase.save(action.text)
+        emit(
+            currentState.copy(
+                storedText = ""
+            )
+        )
     }
 
     private fun stateWithCheckForUpdates(
@@ -61,49 +151,10 @@ class MainReducer @Inject constructor(
         return currentState
     }
 
-    private fun stateWithSaveClicked(
-        currentState: MainViewState,
-        action: MainAction.OnSaveClicked
-    ): MainViewState {
-        saveEncryptedTextUseCase.save(action.text)
-        return currentState.copy(
-            storedText = ""
-        )
-    }
-
-    private fun stateWithJetpackSaveClicked(
-        currentState: MainViewState,
-        action: MainAction.OnJetpackSaveClicked
-    ): MainViewState {
-        runBlocking {
-            jetpackSaveUseCase.save(action.text)
-        }
-        return currentState.copy(
-            storedText = ""
-        )
-    }
-
     private fun stateWithOnError(
         currentState: MainViewState,
         action: MainAction.OnError
     ) = currentState.copy(
         storedText = action.message
     )
-
-    private fun stateWithGetClicked(
-        currentState: MainViewState,
-    ): MainViewState {
-        val text = getEncryptedTextUseCase.getEncryptedText()
-        return currentState.copy(
-            storedText = text
-        )
-    }
-
-    private fun stateWithJetpackGetClicked(
-        currentState: MainViewState,
-    ): MainViewState {
-        return currentState.copy(
-            getFlowText = jetpackSaveUseCase.getUserText()
-        )
-    }
 }
