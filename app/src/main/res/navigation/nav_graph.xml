@@ -23,6 +23,9 @@
             android:id="@+id/action_mainFragment_to_mapsFragment"
             app:destination="@id/mapsFragment" />
         <action
+            android:id="@+id/action_mainFragment_to_TDDFragment"
+            app:destination="@id/TDDFragment" />
+        <action
             android:id="@+id/action_mainFragment_to_multipleTypeListFragment"
             app:destination="@id/multipleTypeListFragment" />
     </fragment>
@@ -58,7 +61,11 @@
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
     <fragment
+        android:id="@+id/TDDFragment"
+        android:name="com.frommetoyou.modulesapp2.presentation.ui.fragment.TDDFragment"
+        android:label="TDDFragment" />
+    <fragment
         android:id="@+id/multipleTypeListFragment"
-        android:name="com.frommetoyou.modulesapp2.presentation.ui.fragment.MultipleTypeListFragment"
+        android:name="com.example.feature_lists.presentation.ui.fragment.MultipleTypeListFragment"
         android:label="MultipleTypeListFragment" />
 </navigation>

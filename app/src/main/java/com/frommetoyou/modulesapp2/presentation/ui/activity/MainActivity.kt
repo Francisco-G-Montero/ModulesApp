@@ -10,6 +10,7 @@ import javax.inject.Singleton
 @AndroidEntryPoint
 @Singleton
 class MainActivity @Inject constructor() : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

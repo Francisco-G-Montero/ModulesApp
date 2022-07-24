@@ -2,11 +2,8 @@ package com.frommetoyou.modulesapp2
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.cash.turbine.test
-import com.frommetoyou.modulesapp2.data.repository.FactsRepositoryImpl
-import com.frommetoyou.modulesapp2.data.services.api.FactsApiService
 import com.frommetoyou.modulesapp2.data.util.CoroutinesDispatcherProvider
 import com.frommetoyou.modulesapp2.domain.repository.FactsRepository
-import com.frommetoyou.modulesapp2.domain.usecases.CallApiUseCase
 import com.frommetoyou.modulesapp2.presentation.ui.reducer.TDDReducer
 import com.frommetoyou.modulesapp2.presentation.ui.state.TDDViewState
 import com.frommetoyou.modulesapp2.presentation.viewmodel.TDDViewModel
@@ -41,7 +38,7 @@ class TDDTests {
     private lateinit var viewModel: TDDViewModel
     private lateinit var viewState: TDDViewState
     private lateinit var reducer: TDDReducer
-    private lateinit var callApiUseCase: CallApiUseCase
+    private lateinit var callApiUseCase: CallFactsApiUseCase
     private lateinit var repository: FactsRepository
     private lateinit var factsApiService: FactsApiService
 
@@ -51,7 +48,7 @@ class TDDTests {
         Dispatchers.setMain(coroutinesDispatchers.io)
         factsApiService = mock()
         repository = FactsRepositoryImpl(factsApiService)
-        callApiUseCase = CallApiUseCase(repository)
+        callApiUseCase = CallFactsApiUseCase(repository)
         reducer = TDDReducer(callApiUseCase)
         viewState = TDDViewState()
         viewModel = TDDViewModel(reducer)

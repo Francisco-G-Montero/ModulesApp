@@ -105,6 +105,10 @@ class MainFragment : Fragment() {
             val action = MainFragmentDirections.actionMainFragmentToMultipleTypeListFragment()
             findNavController().navigate(action)
         }
+        binding.btnTddFragment.setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToTDDFragment()
+            findNavController().navigate(action)
+        }
         viewModel.getSelectedButtonLinkData(requireActivity())
         initializePlacesFragment()
     }
@@ -166,12 +170,8 @@ class MainFragment : Fragment() {
 
     private fun getDynamicLinkIfAvailable(btnSelectedData: String) {
         when (btnSelectedData) {
-            BTN_1 -> {
-                selectedButton1()
-            }
-            BTN_2 -> {
-                selectedButton2()
-            }
+            BTN_1 -> selectedButton1()
+            BTN_2 -> selectedButton2()
             else -> {}
         }
         Toast.makeText(requireContext(), btnSelectedData, Toast.LENGTH_SHORT).show()
